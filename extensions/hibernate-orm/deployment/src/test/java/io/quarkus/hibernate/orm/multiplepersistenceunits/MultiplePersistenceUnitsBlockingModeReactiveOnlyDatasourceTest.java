@@ -1,12 +1,9 @@
 package io.quarkus.hibernate.orm.multiplepersistenceunits;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import io.quarkus.maven.dependency.Dependency;
 import io.quarkus.runtime.configuration.ConfigurationException;
 import io.quarkus.test.QuarkusUnitTest;
 
@@ -14,8 +11,6 @@ public class MultiplePersistenceUnitsBlockingModeReactiveOnlyDatasourceTest {
 
     @RegisterExtension
     static QuarkusUnitTest runner = new QuarkusUnitTest()
-            .setForcedDependencies(List.of(
-                    Dependency.of("io.quarkus", "quarkus-reactive-pg-client")))
             .assertException(t -> {
                 Assertions.assertInstanceOf(ConfigurationException.class, t);
                 String msg = t.getMessage();

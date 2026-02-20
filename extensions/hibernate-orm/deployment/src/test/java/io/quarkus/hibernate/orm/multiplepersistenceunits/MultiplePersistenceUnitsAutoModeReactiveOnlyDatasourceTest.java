@@ -2,8 +2,6 @@ package io.quarkus.hibernate.orm.multiplepersistenceunits;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.persistence.EntityManager;
@@ -13,15 +11,12 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import io.quarkus.hibernate.orm.multiplepersistenceunits.model.annotation.shared.SharedEntity;
-import io.quarkus.maven.dependency.Dependency;
 import io.quarkus.test.QuarkusUnitTest;
 
 public class MultiplePersistenceUnitsAutoModeReactiveOnlyDatasourceTest {
 
     @RegisterExtension
     static QuarkusUnitTest runner = new QuarkusUnitTest()
-            .setForcedDependencies(List.of(
-                    Dependency.of("io.quarkus", "quarkus-reactive-pg-client")))
             .withApplicationRoot((jar) -> jar
                     .addClass(SharedEntity.class)
                     .addAsResource("application-multiple-persistence-units-mode-auto-reactive-only.properties",

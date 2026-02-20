@@ -131,6 +131,11 @@
             <artifactId>geolatte-geom</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-reactive-pg-client-deployment</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
