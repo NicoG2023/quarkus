@@ -1087,9 +1087,26 @@ public final class HibernateOrmProcessor {
                 ReactiveDataSourceBuildItem::isDefault, persistenceUnitConfig.datasource());
 
         if (jdbcDataSource.isEmpty() && reactiveDataSource.isPresent()) {
-            LOG.debugf("The datasource '%s' is only reactive, do not create this PU '%s' as blocking",
-                    persistenceUnitConfig.datasource().orElse(DEFAULT_PERSISTENCE_UNIT_NAME), persistenceUnitName);
-            return;
+            if (mode == HibernateOrmConfigPersistenceUnit.PersistenceUnitMode.AUTO
+                    || mode == HibernateOrmConfigPersistenceUnit.PersistenceUnitMode.REACTIVE) {
+                // Route A: In AUTO (or explicitly REACTIVE), if the assigned datasource has no JDBC capability
+                // (reactive-only), do not bootstrap a *blocking* Hibernate ORM persistence unit.
+                //
+                // Skipping descriptor creation here avoids build-time ORM bootstrap steps for this PU
+                // (entity scanning / packages validation / metadata initialization) and ensures no blocking
+                // CDI beans (EntityManager/Session) are produced for it.
+                LOG.debugf("The datasource '%s' is only reactive, do not create this PU '%s' as blocking (mode=%s)",
+                        persistenceUnitConfig.datasource().orElse(DEFAULT_PERSISTENCE_UNIT_NAME),
+                        persistenceUnitName,
+                        mode);
+                return;
+            }
+            // mode=BLOCKING o BOTH -> error
+            throw new ConfigurationException(String.format(Locale.ROOT,
+                    "Persistence unit '%s' is configured with mode=%s, but its datasource '%s' is reactive-only (no JDBC datasource found). "
+                            + "Either configure a JDBC datasource for it, or set mode=reactive.",
+                    persistenceUnitName, mode,
+                    persistenceUnitConfig.datasource().orElse(DataSourceUtil.DEFAULT_DATASOURCE_NAME)));
         }
 
         boolean explicitDataSource = persistenceUnitConfig.datasource().isPresent();
