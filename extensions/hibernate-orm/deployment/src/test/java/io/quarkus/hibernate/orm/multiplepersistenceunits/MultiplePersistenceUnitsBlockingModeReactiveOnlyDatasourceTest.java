@@ -12,10 +12,12 @@ import io.quarkus.test.QuarkusUnitTest;
 
 public class MultiplePersistenceUnitsBlockingModeReactiveOnlyDatasourceTest {
 
+    static final String QUARKUS_VERSION = System.getProperty("project.version", "999-SNAPSHOT");
+
     @RegisterExtension
     static QuarkusUnitTest runner = new QuarkusUnitTest()
             .setForcedDependencies(List.of(
-                    Dependency.of("io.quarkus", "quarkus-reactive-pg-client")))
+                    Dependency.of("io.quarkus", "quarkus-reactive-pg-client", QUARKUS_VERSION)))
             .assertException(t -> {
                 Assertions.assertInstanceOf(ConfigurationException.class, t);
                 String msg = t.getMessage();

@@ -18,10 +18,12 @@ import io.quarkus.test.QuarkusUnitTest;
 
 public class MultiplePersistenceUnitsAutoModeReactiveOnlyDatasourceTest {
 
+    static final String QUARKUS_VERSION = System.getProperty("project.version", "999-SNAPSHOT");
+
     @RegisterExtension
     static QuarkusUnitTest runner = new QuarkusUnitTest()
             .setForcedDependencies(List.of(
-                    Dependency.of("io.quarkus", "quarkus-reactive-pg-client")))
+                    Dependency.of("io.quarkus", "quarkus-reactive-pg-client", QUARKUS_VERSION)))
             .withApplicationRoot((jar) -> jar
                     .addClass(SharedEntity.class)
                     .addAsResource("application-multiple-persistence-units-mode-auto-reactive-only.properties",
